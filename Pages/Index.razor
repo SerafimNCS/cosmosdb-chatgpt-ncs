@@ -1,6 +1,6 @@
 ﻿@page "/"
 
-<PageTitle>NCS NEXT CHATGPT v0.1</PageTitle>
+<PageTitle>NCS NEXT CHATGPT v0.12</PageTitle>
 <main class="h-100 d-flex flex-row justify-content-start">
     @if (!IsNavMenuCollapsed)
     {
@@ -20,7 +20,6 @@
     private ChatPane? ChatPane = default;
     private NavMenu? NavMenu = default;
     private bool IsNavMenuCollapsed { get; set; }
-    private bool ShowPasscodeDialog { get; set; } = true;
 
     private void UpdateNavBarVisibility()
     {
@@ -44,11 +43,6 @@
 
         // Inform blazor the UI needs updating
         await InvokeAsync(StateHasChanged);
-
-        if (ShowPasscodeDialog)
-        {
-            await CheckPasscodeAsync();
-        }
     }
 
     public async void ForceRefreshAsync()
@@ -57,23 +51,5 @@
         await InvokeAsync(StateHasChanged);
 
         NavMenu?.UpdateNavMenuDisplay("Rename by Open AI");
-    }
-
-    private async Task CheckPasscodeAsync()
-    {
-        bool passcodeVerified = false;
-        while (!passcodeVerified)
-        {
-            string input = await JSRuntime.InvokeAsync<string>("prompt", "Please enter the passcode:");
-            if (input != null && input.ToUpper() == "NEXTCHATGPT")
-            {
-                passcodeVerified = true;
-                ShowPasscodeDialog = false;
-            }
-            else
-            {
-                await JSRuntime.InvokeVoidAsync("alert", "Incorrect passcode. Please try again.");
-            }
-        }
     }
 }
