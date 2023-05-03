@@ -47,23 +47,17 @@ Please note this is a sample application. It is intended to demonstrate how to u
 
 
 ### Installation
-
 1. Fork this repository to your own GitHub account.
 1. Depending on whether you deploy using the ARM Template or Bicep, modify this variable in one of those files to point to your fork of this repository, "webSiteRepository": "https://github.com/Azure-Samples/cosmosdb-chatgpt.git" 
-1. If using the Deploy to Azure button below, also modify this README.md file to change the path for the Deploy To Azure button to your local repository.
-1. If you deploy this application without making either of these changes, you can update the repository by disconnecting and connecting an external git repository pointing to your fork.
-
+1. Under the repository:
+   - az login
+   - az group create --name <resource-group-name> --location <location>
+   - az deployment group create --resource-group <resource-group-name> --template-file azuredeploy.bicep
 
 The provided ARM or Bicep Template will provision the following resources:
 1. Azure Cosmos DB account with database and container at 400 RU/s. This can optionally be configured to run on the Cosmos DB free tier if available for your subscription.
 1. Azure App service. This will be configured for CI/CD to your forked GitHub repository. This service can also be configured to run on App Service free tier.
 1. Azure Open AI account. You must also specify a name for the deployment of the "text-davinci-003" model which is used by this application.
-
-Note: You must have access to Azure Open AI service from your subscription before attempting to deploy this application.
-
-All connection information for Azure Cosmos DB and Open AI is zero-touch and injected as environment variables in the Azure App Service instance at deployment time. 
-
-<!-- [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fcosmosdb-chatgpt%2Fmain%2Fazuredeploy.json) -->
 
 
 ### Quickstart
