@@ -1,9 +1,30 @@
 ﻿@page "/"
-@inject NavigationManager NavigationManager
 
 <PageTitle>NCS NEXT CHATGPT</PageTitle>
-<main class="h-100 d-flex flex-row justify-content-start">
+<!-- <main class="h-100 d-flex flex-row justify-content-start">
     @if (!IsNavMenuCollapsed)
+    {
+        <NavMenu @ref="@NavMenu" OnChatClicked="LoadChatEventHandlerAsync" OnNavBarVisibilityUpdated="UpdateNavBarVisibility" />
+    }
+    <section class="flex-grow-1">
+        <ChatPane @ref="@ChatPane" CurrentSession="@CurrentSession" OnChatUpdated="ForceRefreshAsync" OnNavBarVisibilityUpdated="UpdateNavBarVisibility" ShowHeader="@IsNavMenuCollapsed" />
+    </section>
+</main> -->
+
+<main class="h-100 d-flex flex-row justify-content-start">
+    @if (!IsNavMenuCollapsed && !IsAuthenticated)
+    {
+        <div class="position-fixed top-50 start-50 translate-middle">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Please enter the passcode</h5>
+                    <input type="password" class="form-control mb-3" @bind-value="@Passcode" />
+                    <button class="btn btn-primary" @onclick="ValidatePasscode">Submit</button>
+                </div>
+            </div>
+        </div>
+    }
+    @if (!IsNavMenuCollapsed && IsAuthenticated)
     {
         <NavMenu @ref="@NavMenu" OnChatClicked="LoadChatEventHandlerAsync" OnNavBarVisibilityUpdated="UpdateNavBarVisibility" />
     }
@@ -12,8 +33,9 @@
     </section>
 </main>
 
-@code {
 
+
+@code {
     [Parameter]
     public EventCallback<string> OnChatUpdated { get; set; } = default!;
 
@@ -21,7 +43,8 @@
     private ChatPane? ChatPane = default;
     private NavMenu? NavMenu = default;
     private bool IsNavMenuCollapsed { get; set; }
-    private readonly string TokenPasscode = "NEXTCHATGPT";
+    private string Passcode = string.Empty;
+    private bool IsAuthenticated = false;
 
     private void UpdateNavBarVisibility()
     {
@@ -32,39 +55,24 @@
     {
         NavMenu = new NavMenu();
         ChatPane = new ChatPane();
+        IsAuthenticated = !string.IsNullOrWhiteSpace(LocalStorage.GetItem<string>("passcode"));
     }
-    
+
     public async void LoadChatEventHandlerAsync(Session session)
     {
-        if (session.Passcode != TokenPasscode)
+        if (IsAuthenticated)
         {
-            NavigationManager.NavigateTo("/404");
-            return;
+            CurrentSession = session;
+
+            if (ChatPane is not null)
+            {
+                ChatPane.ChangeCurrentChatSession(session);
+            }
+
+            // Inform blazor the UI needs updating
+            await InvokeAsync(StateHasChanged);
         }
-
-        CurrentSession = session;
-
-        if (ChatPane is not null)
-        {
-            ChatPane.ChangeCurrentChatSession(session);
-        }
-
-        // Inform blazor the UI needs updating
-        await InvokeAsync(StateHasChanged);
     }
-
-    <!-- public async void LoadChatEventHandlerAsync(Session session)
-    {
-        CurrentSession = session;
-
-        if (ChatPane is not null)
-        {
-            ChatPane.ChangeCurrentChatSession(session);
-        }
-
-        // Inform blazor the UI needs updating
-        await InvokeAsync(StateHasChanged);
-    } -->
 
     public async void ForceRefreshAsync()
     {
@@ -72,5 +80,20 @@
         await InvokeAsync(StateHasChanged);
 
         NavMenu?.UpdateNavMenuDisplay("Rename by Open AI");
+    }
+
+    private async Task ValidatePasscode()
+    {
+        if (Passcode == "YOUR_PASSCODE")
+        {
+            LocalStorage.SetItem<string>("passcode", Passcode);
+            IsAuthenticated = true;
+            await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            Passcode = string.Empty;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }
