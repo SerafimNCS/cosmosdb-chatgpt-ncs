@@ -52,7 +52,7 @@ Please note this is a sample application. It is intended to demonstrate how to u
 1. Under the repository:
    - az login
    - az group create --name <resource-group-name> --location <location>
-   - az deployment group create --resource-group <resource-group-name> --template-file azuredeploy.bicep
+   - az deployment group create --resource-group <resource-group-name> --template-file azuredeploy.bicep --mode Complete
 
 The provided ARM or Bicep Template will provision the following resources:
 1. Azure Cosmos DB account with database and container at 400 RU/s. This can optionally be configured to run on the Cosmos DB free tier if available for your subscription.
