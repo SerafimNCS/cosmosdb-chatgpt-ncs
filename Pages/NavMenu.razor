@@ -88,7 +88,7 @@
 
 @if (_renamePopUpOpen)
 {
-    <Input Caption="Rename a Chat"
+    <Input Caption="Set a Passcode for this Session."
         Value="@_popUpText"
         OnClose="@OnInputClose" >
     </Input>
@@ -200,7 +200,7 @@
     {
         _renamePopUpOpen = true;
         _sessionId = id;
-        _popUpText = title;
+        _popUpText = "/[USER:<user_name>]//[PASSCODE:<passcode>]";
     }
 
     private async Task OnInputClose(string newName)
