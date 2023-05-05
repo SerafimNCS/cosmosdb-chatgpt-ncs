@@ -315,6 +315,8 @@
             CurrentSession.TokensUsed = tokensUsed;
 
             await LoadCurrentChatAsync();
+        } else {
+            ModelState.AddModelError("", "Session name is not valid. Please enter 'ABC777'.");
         }
 
         return 0;
