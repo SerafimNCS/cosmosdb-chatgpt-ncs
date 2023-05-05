@@ -1,8 +1,7 @@
 ﻿@page "/"
 @using System.Timers
 
-
-<PageTitle>NCS NEXT CHATGPT v0.22</PageTitle>
+<PageTitle>NCS NEXT CHATGPT v0.2</PageTitle>
 <main class="h-100 d-flex flex-row justify-content-start">
     @if (!IsNavMenuCollapsed)
     {
@@ -28,9 +27,7 @@
     private bool IsNavMenuCollapsed { get; set; }
 
     private bool isPasscodeVerified = false;
-    private Timer passcodeTimer;
     private const string PASSCODE = "NEXTCHATGPT";
-    private const int PASSCODE_TIMER_INTERVAL = 360;
 
 
     private void UpdateNavBarVisibility()
@@ -42,19 +39,6 @@
     {
         NavMenu = new NavMenu();
         ChatPane = new ChatPane();
-        passcodeTimer = new Timer(PASSCODE_TIMER_INTERVAL);
-        passcodeTimer.Elapsed += PasscodeTimer_Elapsed;
-        passcodeTimer.Start();
-    }
-
-    private void PasscodeTimer_Elapsed(object sender, ElapsedEventArgs e)
-    {
-        isPasscodeVerified = false;
-        passcodeTimer.Stop();
-        InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
     }
 
     public async void LoadChatEventHandlerAsync(Session session)
@@ -78,7 +62,6 @@
             if (input == PASSCODE)
             {
                 isPasscodeVerified = true;
-                passcodeTimer.Start();
                 LoadChatEventHandlerAsync(session);
             }
             else
