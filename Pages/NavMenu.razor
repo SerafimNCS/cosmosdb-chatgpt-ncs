@@ -309,11 +309,15 @@
         if (CurrentSession is null)
             CurrentSession = new Session();
 
-        CurrentSession.SessionId = _sessionId;
-        CurrentSession.Name = sessionName;
-        CurrentSession.TokensUsed = tokensUsed;
+        if (sessionName == "ABC777") {
+            CurrentSession.SessionId = _sessionId;
+            CurrentSession.Name = sessionName;
+            CurrentSession.TokensUsed = tokensUsed;
 
-        await LoadCurrentChatAsync();
+            await LoadCurrentChatAsync();
+        } else {
+            window.alert("Session name is not valid. Please enter 'ABC777'.");
+        }
 
         return 0;
     }
