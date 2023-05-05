@@ -1,8 +1,8 @@
 ﻿@page "/"
 @using System.Timers
-@inject IJSRuntime JSRuntime
 
-<PageTitle>NCS NEXT CHATGPT v0.21</PageTitle>
+
+<PageTitle>NCS NEXT CHATGPT v0.22</PageTitle>
 <main class="h-100 d-flex flex-row justify-content-start">
     @if (!IsNavMenuCollapsed)
     {
@@ -15,6 +15,9 @@
 
 
 @code {
+
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; }
 
     [Parameter]
     public EventCallback<string> OnChatUpdated { get; set; } = default!;
@@ -30,21 +33,18 @@
     private const int PASSCODE_TIMER_INTERVAL = 360;
 
 
+    private void UpdateNavBarVisibility()
+    {
+        IsNavMenuCollapsed = !IsNavMenuCollapsed;
+    }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         NavMenu = new NavMenu();
         ChatPane = new ChatPane();
         passcodeTimer = new Timer(PASSCODE_TIMER_INTERVAL);
         passcodeTimer.Elapsed += PasscodeTimer_Elapsed;
         passcodeTimer.Start();
-
-        // Check if the passcode was already verified
-        var isVerified = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "isPasscodeVerified");
-        if (isVerified == "true")
-        {
-            isPasscodeVerified = true;
-        }
     }
 
     private void PasscodeTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -79,7 +79,6 @@
             {
                 isPasscodeVerified = true;
                 passcodeTimer.Start();
-                await JSRuntime.InvokeAsync<object>("sessionStorage.setItem", "isPasscodeVerified", "true");
                 LoadChatEventHandlerAsync(session);
             }
             else
@@ -90,6 +89,7 @@
         }
     }
 
+
     public async void ForceRefreshAsync()
     {
         // Inform blazor the UI needs updating
@@ -97,5 +97,4 @@
 
         NavMenu?.UpdateNavMenuDisplay("Rename by Open AI");
     }
-
 }
