@@ -82,7 +82,7 @@
 @if (_deletePopUpOpen)
 {
     <Confirmation Caption="Delete a Chat"
-        Message="ChatRoom"
+        Message="@_popUpText"
         OnClose="@OnConfirmationClose"
         Type="Confirmation.Category.DeleteNot">
     </Confirmation>
