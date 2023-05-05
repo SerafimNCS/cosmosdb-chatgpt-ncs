@@ -16,6 +16,9 @@
 
 @code {
 
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; }
+
     [Parameter]
     public EventCallback<string> OnChatUpdated { get; set; } = default!;
 
@@ -28,8 +31,6 @@
     private Timer passcodeTimer;
     private const string PASSCODE = "NEXTCHATGPT";
     private const int PASSCODE_TIMER_INTERVAL = 3600000;
-
-
 
 
     private void UpdateNavBarVisibility()
@@ -70,12 +71,6 @@
         // Inform blazor the UI needs updating
         await InvokeAsync(StateHasChanged);
     }
-
-
-           
-
-
-
 
 
     public async void ForceRefreshAsync()
