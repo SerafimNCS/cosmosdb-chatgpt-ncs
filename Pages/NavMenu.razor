@@ -210,6 +210,8 @@
     {
         if (newName!="")
         {
+            newName = newName.Insert(index, "/[v]/");
+            
             bool updateCurrentChat = false;
 
             if (_sessionId == CurrentSession?.SessionId)
