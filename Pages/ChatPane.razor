@@ -218,7 +218,7 @@
 
         await chatService.GetChatCompletionAsync(CurrentSession?.SessionId, UserPrompt);
 
-        if(_messagesInChat?.Count == 2)
+        <!-- if(_messagesInChat?.Count == 2)
         {
             string newSessionName;
             newSessionName = await chatService.SummarizeChatSessionNameAsync(CurrentSession?.SessionId, String.Join(Environment.NewLine, _messagesInChat.Select(m => m.Text)));
@@ -227,7 +227,7 @@
             {
                 CurrentSession.Name = newSessionName;
             }
-        }
+        } -->
         await OnChatUpdated.InvokeAsync();
 
         if (_onMessagePosted is not null && CurrentSession is not null)
