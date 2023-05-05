@@ -302,7 +302,7 @@
         return 0;
     }
 
-    async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
+    <!-- async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
     {
         if (ChatSessions is null) return 0;
 
@@ -316,7 +316,35 @@
         await LoadCurrentChatAsync();
 
         return 0;
+    } -->
+
+    async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
+    {
+        if (ChatSessions is null) return 0;
+
+        // Prompt user to input passcode
+        string passcode = prompt("Please enter the passcode:");
+
+        // Check if passcode is correct
+        if (passcode != "NEXT")
+        {
+            // If passcode is incorrect, alert the user and return
+            alert("Wrong passcode. Access denied.");
+            return 0;
+        }
+
+        if (CurrentSession is null)
+        CurrentSession = new Session();
+
+        CurrentSession.SessionId = _sessionId;
+        CurrentSession.Name = sessionName;
+        CurrentSession.TokensUsed = tokensUsed;
+
+        await LoadCurrentChatAsync();
+
+        return 0;
     }
+
 
     private bool IsActiveSession(string _sessionId) => CurrentSession switch
     {
