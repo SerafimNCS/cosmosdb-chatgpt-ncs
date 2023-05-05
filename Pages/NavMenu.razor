@@ -303,11 +303,6 @@
         return 0;
     }
 
-    async Task<string> ShowPromptDialogBoxAsync(string message, string defaultValue)
-    {
-        return await JSRuntime.InvokeAsync<string>("prompt", message, defaultValue);
-    }
-
     async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
     {
         if (ChatSessions is null) return 0;
@@ -315,7 +310,7 @@
         if (CurrentSession is null)
             CurrentSession = new Session();
 
-        string chatroom_passcode = await ShowPromptDialogBoxAsync("Please enter the session name", "ABC777");
+        string chatroom_passcode = await JSRuntime.InvokeAsync<string>("prompt", "Please enter the Session Passcode", "");
 
         if (sessionName == chatroom_passcode) {
             CurrentSession.SessionId = _sessionId;
@@ -323,6 +318,8 @@
             CurrentSession.TokensUsed = tokensUsed;
 
             await LoadCurrentChatAsync();
+        } else {
+            await JSRuntime.InvokeVoidAsync("alert", "Session Passcode is not valid. Access Denied.");
         }
 
         return 0;
