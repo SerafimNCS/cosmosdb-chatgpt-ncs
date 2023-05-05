@@ -203,14 +203,13 @@
     {
         _renamePopUpOpen = true;
         _sessionId = id;
-        _popUpText = "/[USER]/:<name>/[PASSCODE]/:<passcode>";
+        _popUpText = "/[V]//[USER]/:<name>/[PASSCODE]/:<passcode>";
     }
 
     private async Task OnInputClose(string newName)
     {
         if (newName!="")
         {
-
             
             bool updateCurrentChat = false;
 
@@ -310,6 +309,11 @@
 
     async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
     {
+
+        // Extract the passcode from the session name
+        int passcodeStartIndex = sessionName.IndexOf("/[PASSCODE]/:") + 13;
+        string chatroom_passcode_ground = sessionName.Substring(passcodeStartIndex);
+
         if (ChatSessions is null) return 0;
 
         if (CurrentSession is null)
@@ -317,7 +321,7 @@
 
         string chatroom_passcode = await JSRuntime.InvokeAsync<string>("prompt", "Please enter the Session Passcode", "");
 
-        if (sessionName == chatroom_passcode) {
+        if (chatroom_passcode_ground == chatroom_passcode) {
             CurrentSession.SessionId = _sessionId;
             CurrentSession.Name = sessionName;
             CurrentSession.TokensUsed = tokensUsed;
