@@ -82,7 +82,7 @@
 @if (_deletePopUpOpen)
 {
     <Confirmation Caption="Delete a Chat"
-        Message="@_popUpText"
+        Message="ChatRoom"
         OnClose="@OnConfirmationClose"
         Type="Confirmation.Category.DeleteNot">
     </Confirmation>
@@ -341,7 +341,6 @@
         (Session s) when s.SessionId == _sessionId => true,
         _ => false
     };
-
 
     public string SafeSubstring(string text, int maxLength)
     {
