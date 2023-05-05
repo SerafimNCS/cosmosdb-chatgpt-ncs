@@ -13,7 +13,6 @@
 </main>
 
 
-
 @code {
 
     [Inject]
@@ -30,7 +29,7 @@
     private bool isPasscodeVerified = false;
     private Timer passcodeTimer;
     private const string PASSCODE = "NEXTCHATGPT";
-    private const int PASSCODE_TIMER_INTERVAL = 3600000;
+    private const int PASSCODE_TIMER_INTERVAL = 360;
 
 
     private void UpdateNavBarVisibility()
@@ -59,18 +58,36 @@
 
     public async void LoadChatEventHandlerAsync(Session session)
     {
-        CurrentSession = session;
-
-        string input = await JSRuntime.InvokeAsync<string>("prompt", "Please enter the passcode to access the chat:", "");
-
-        if (ChatPane is not null)
+        if (isPasscodeVerified)
         {
-            ChatPane.ChangeCurrentChatSession(session);
-        }
+            CurrentSession = session;
 
-        // Inform blazor the UI needs updating
-        await InvokeAsync(StateHasChanged);
+            if (ChatPane is not null)
+            {
+                ChatPane.ChangeCurrentChatSession(session);
+            }
+
+            // Inform blazor the UI needs updating
+            await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            string input = await JSRuntime.InvokeAsync<string>("prompt", "Please enter the passcode to access the chat:", "");
+
+            if (input == PASSCODE)
+            {
+                isPasscodeVerified = true;
+                passcodeTimer.Start();
+                LoadChatEventHandlerAsync(session);
+            }
+            else
+            {
+                await JSRuntime.InvokeAsync<object>("alert", "Invalid passcode. Please try again.");
+                LoadChatEventHandlerAsync(session);
+            }
+        }
     }
+
 
 
     public async void ForceRefreshAsync()
