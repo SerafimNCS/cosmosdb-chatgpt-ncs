@@ -59,10 +59,10 @@
                                             @if (!session.Name.Contains("/[V]/"))
                                             {
                                                 <button type="button" class="btn btn-sm btn-link text-light" @onclick="@(e => OpenInput(session.SessionId,session.Name))">
-                                                    <i class="bi bi-pencil-fill me-1"></i>
+                                                    <i class="bi bi-lock-fill me-1"></i>
                                                 </button>
                                             }
-                                            @if (!session.Name.Contains("Public Chat Room"))
+                                            @if (!session.Name.Contains("/[DROP_DELETE]/"))
                                             {
                                                 <button type="button" class="btn btn-sm btn-link text-light" @onclick="@(e => OpenConfirmation(session.SessionId,session.Name))">
                                                     <i class="bi bi-trash-fill ms-1"></i>
