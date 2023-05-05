@@ -56,18 +56,43 @@
         });
     }
 
+
+
     public async void LoadChatEventHandlerAsync(Session session)
     {
-        CurrentSession = session;
-
-        if (ChatPane is not null)
+        if (isPasscodeVerified)
         {
-            ChatPane.ChangeCurrentChatSession(session);
-        }
+            CurrentSession = session;
 
-        // Inform blazor the UI needs updating
-        await InvokeAsync(StateHasChanged);
+            if (ChatPane is not null)
+            {
+                ChatPane.ChangeCurrentChatSession(session);
+            }
+
+            // Inform blazor the UI needs updating
+            await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            string input = await JSRuntime.InvokeAsync<string>("prompt", "Please enter the passcode to access the chat:", "");
+
+            if (input == PASSCODE)
+            {
+                isPasscodeVerified = true;
+                passcodeTimer.Start();
+                LoadChatEventHandlerAsync(session);
+            }
+            else
+            {
+                await JSRuntime.InvokeAsync<object>("alert", "Invalid passcode. Please try again.");
+                LoadChatEventHandlerAsync(session);
+            }
+        }
     }
+
+
+
+
 
     public async void ForceRefreshAsync()
     {
