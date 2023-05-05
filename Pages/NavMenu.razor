@@ -302,21 +302,7 @@
         return 0;
     }
 
-    <!-- async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
-    {
-        if (ChatSessions is null) return 0;
 
-        if (CurrentSession is null)
-           CurrentSession = new Session();
-
-        CurrentSession.SessionId = _sessionId;
-        CurrentSession.Name = sessionName;
-        CurrentSession.TokensUsed = tokensUsed;
-
-        await LoadCurrentChatAsync();
-
-        return 0;
-    } -->
 
     async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
     {
