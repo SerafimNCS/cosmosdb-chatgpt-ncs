@@ -41,6 +41,19 @@
     {
         NavMenu = new NavMenu();
         ChatPane = new ChatPane();
+        passcodeTimer = new Timer(PASSCODE_TIMER_INTERVAL);
+        passcodeTimer.Elapsed += PasscodeTimer_Elapsed;
+        passcodeTimer.Start();
+    }
+
+    private void PasscodeTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        isPasscodeVerified = false;
+        passcodeTimer.Stop();
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
     }
 
     public async void LoadChatEventHandlerAsync(Session session)
