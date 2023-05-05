@@ -1,7 +1,7 @@
 ﻿@using Cosmos.Chat.GPT.Constants
 @using Cosmos.Chat.GPT.Services
 @inject ChatService chatService
-
+@inject IJSRuntime JSRuntime
 
 <div class="h-100 d-flex flex-column" style="min-width: 275px;">
 
@@ -272,6 +272,7 @@
 
     }
 
+
     private async Task<int> LoadCurrentChatAsync()
     {
         int index = 0;
@@ -302,6 +303,11 @@
         return 0;
     }
 
+    async Task<string> ShowPromptDialogBoxAsync(string message, string defaultValue)
+    {
+        return await JSRuntime.InvokeAsync<string>("prompt", message, defaultValue);
+    }
+
     async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
     {
         if (ChatSessions is null) return 0;
@@ -309,9 +315,9 @@
         if (CurrentSession is null)
             CurrentSession = new Session();
 
-        string _passcode = window.prompt("Please enter the session name", "ABC777");
+        string chatroom_passcode = await ShowPromptDialogBoxAsync("Please enter the session name", "ABC777");
 
-        if (sessionName == _passcode) {
+        if (sessionName == chatroom_passcode) {
             CurrentSession.SessionId = _sessionId;
             CurrentSession.Name = sessionName;
             CurrentSession.TokensUsed = tokensUsed;
