@@ -309,14 +309,14 @@
         if (CurrentSession is null)
             CurrentSession = new Session();
 
-        if (sessionName == "ABC777") {
+        string _passcode = window.prompt("Please enter the session name", "ABC777");
+
+        if (sessionName == _passcode) {
             CurrentSession.SessionId = _sessionId;
             CurrentSession.Name = sessionName;
             CurrentSession.TokensUsed = tokensUsed;
 
             await LoadCurrentChatAsync();
-        } else {
-            ModelState.AddModelError("", "Session name is not valid. Please enter 'ABC777'.");
         }
 
         return 0;
