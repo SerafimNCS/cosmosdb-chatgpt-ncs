@@ -218,8 +218,6 @@
 
         await chatService.GetChatCompletionAsync(CurrentSession?.SessionId, UserPrompt);
 
-
-
         await OnChatUpdated.InvokeAsync();
 
         if (_onMessagePosted is not null && CurrentSession is not null)
