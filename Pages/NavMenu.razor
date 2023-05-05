@@ -342,9 +342,18 @@
         _ => false
     };
 
-    public string SafeSubstring(string text, int maxLength) => text switch
+
+    public string SafeSubstring(string text, int maxLength)
     {
-        null => string.Empty,
-        _ => text.Length > maxLength ? text.Substring(0, maxLength) + "..." : text
-    };
+        if (text == null) return string.Empty;
+        var startIndex = text.IndexOf("/[USER]/:") + 9;
+        var endIndex = text.IndexOf("/[PASSCODE]/:");
+        if (endIndex < startIndex) endIndex = text.Length;
+        var username = text.Substring(startIndex, endIndex - startIndex);
+        return username.Length > maxLength ? username.Substring(0, maxLength) + "..." : username;
+    }
+
+
+
+
 }
