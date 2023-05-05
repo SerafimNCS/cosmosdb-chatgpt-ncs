@@ -1,28 +1,18 @@
 ﻿@page "/"
+@using System.Timers
 
-<PageTitle>NCS NEXT CHATGPT v0.22</PageTitle>
+<PageTitle>NCS NEXT CHATGPT v0.21</PageTitle>
 <main class="h-100 d-flex flex-row justify-content-start">
     @if (!IsNavMenuCollapsed)
     {
         <NavMenu @ref="@NavMenu" OnChatClicked="LoadChatEventHandlerAsync" OnNavBarVisibilityUpdated="UpdateNavBarVisibility" />
     }
     <section class="flex-grow-1">
-        @if (CurrentSession is null && !IsPasscodeEntered)
-        {
-            <div class="d-flex justify-content-center align-items-center h-100">
-                <div class="text-center">
-                    <h1>Please enter the passcode to access the chat</h1>
-                    <input type="password" @bind-value="@Passcode" class="form-control mb-3" />
-                    <button class="btn btn-primary" @onclick="VerifyPasscode">Enter</button>
-                </div>
-            </div>
-        }
-        else
-        {
-            <ChatPane @ref="@ChatPane" CurrentSession="@CurrentSession" OnChatUpdated="ForceRefreshAsync" OnNavBarVisibilityUpdated="UpdateNavBarVisibility" ShowHeader="@IsNavMenuCollapsed" />
-        }
+        <ChatPane @ref="@ChatPane" CurrentSession="@CurrentSession" OnChatUpdated="ForceRefreshAsync" OnNavBarVisibilityUpdated="UpdateNavBarVisibility" ShowHeader="@IsNavMenuCollapsed" />
     </section>
 </main>
+
+
 
 @code {
 
@@ -34,8 +24,13 @@
     private NavMenu? NavMenu = default;
     private bool IsNavMenuCollapsed { get; set; }
 
-    private string Passcode = "";
-    private bool IsPasscodeEntered = false;
+    private bool isPasscodeVerified = false;
+    private Timer passcodeTimer;
+    private const string PASSCODE = "NEXTCHATGPT";
+    private const int PASSCODE_TIMER_INTERVAL = 3600000;
+
+
+
 
     private void UpdateNavBarVisibility()
     {
@@ -50,18 +45,15 @@
 
     public async void LoadChatEventHandlerAsync(Session session)
     {
-        if (IsPasscodeEntered)
+        CurrentSession = session;
+
+        if (ChatPane is not null)
         {
-            CurrentSession = session;
-
-            if (ChatPane is not null)
-            {
-                ChatPane.ChangeCurrentChatSession(session);
-            }
-
-            // Inform blazor the UI needs updating
-            await InvokeAsync(StateHasChanged);
+            ChatPane.ChangeCurrentChatSession(session);
         }
+
+        // Inform blazor the UI needs updating
+        await InvokeAsync(StateHasChanged);
     }
 
     public async void ForceRefreshAsync()
@@ -70,18 +62,5 @@
         await InvokeAsync(StateHasChanged);
 
         NavMenu?.UpdateNavMenuDisplay("Rename by Open AI");
-    }
-
-    private async Task VerifyPasscode()
-    {
-        if (Passcode == "NEXTCHATGPT")
-        {
-            IsPasscodeEntered = true;
-            await InvokeAsync(StateHasChanged);
-        }
-        else
-        {
-            await JSRuntime.InvokeVoidAsync("alert", "Incorrect passcode. Please try again.");
-        }
     }
 }
