@@ -6,8 +6,8 @@
                 <button type="button" class="btn-close" aria-label="Close" @onclick="@Cancel"></button>
             </div>
             <div class="modal-body">
-                <input class="form-control bg-light text-dark" type="text" @bind="@Value1" @oninput="@((e) => { OnInput(e, 1); })" />
-                <input class="form-control bg-light text-dark" type="text" @bind="@Value2" @oninput="@((e) => { OnInput(e, 2); })" />
+                <input class="form-control bg-light text-dark" type="text" @onkeydown="@Enter" @bind="@Value1" @oninput="@((e) => { MergedValue = Value1 + Value2; ReturnValue = MergedValue; })" />
+                <input class="form-control bg-light text-dark" type="text" @onkeydown="@Enter" @bind="@Value2" @oninput="@((e) => { MergedValue = Value1 + Value2; ReturnValue = MergedValue; })" />
             </div>
             <div class="modal-footer">                
                 <button type="button" class="btn btn-primary"
@@ -29,27 +29,25 @@
     [Parameter] public string? Value2 { get; set; }
     [Parameter] public EventCallback<string> OnClose { get; set; }
 
-    private string mergedValue = "";
+    public string? ReturnValue { get; set; }
+    public string? MergedValue { get; set; }
 
     private Task Cancel()
     {
         return OnClose.InvokeAsync("");
     }
-
     private Task Ok()
     {
-        return OnClose.InvokeAsync(mergedValue);
+        return OnClose.InvokeAsync(ReturnValue);
     }
 
-    private void OnInput(ChangeEventArgs e, int inputIndex)
+    public Task Enter(KeyboardEventArgs e)
     {
-        if (inputIndex == 1)
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            mergedValue = e.Value?.ToString() + Value2;
+            return OnClose.InvokeAsync(ReturnValue);
         }
-        else if (inputIndex == 2)
-        {
-            mergedValue = Value1 + e.Value?.ToString();
-        }
+        return Task.CompletedTask;
     }
 }
+
