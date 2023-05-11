@@ -312,7 +312,7 @@
 
     async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
     {
-        if (sessionName is "New Chat")
+        if (sessionName == "New Chat")
             // await JSRuntime.InvokeVoidAsync("alert", sessionName);
             await OpenInput(_sessionId,sessionName);
 
