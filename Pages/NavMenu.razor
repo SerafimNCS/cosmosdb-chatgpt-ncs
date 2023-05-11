@@ -313,10 +313,7 @@
     async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
     {
         if (sessionName == "New Chat")
-            await JSRuntime.InvokeVoidAsync("alert", sessionName);
-            _renamePopUpOpen = true;
-            _sessionId = id;
-            _popUpText = "/[V]//[USER]/:<name>/[PASSCODE]/:<passcode>";
+            await JSRuntime.InvokeVoidAsync("alert", "Please Set up the Chatroom Name and Poasscode first.");
 
         // Extract the passcode from the session name
         int passcodeStartIndex = sessionName.IndexOf("/[PASSCODE]/:") + 13;
