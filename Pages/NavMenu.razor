@@ -312,7 +312,8 @@
 
     async private Task<int> LoadChat(string _sessionId, string sessionName, int? tokensUsed)
     {
-        await JSRuntime.InvokeVoidAsync("alert", sessionName);
+        if (sessionName is "New Chat")
+            await JSRuntime.InvokeVoidAsync("alert", sessionName);
 
         // Extract the passcode from the session name
         int passcodeStartIndex = sessionName.IndexOf("/[PASSCODE]/:") + 13;
